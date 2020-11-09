@@ -12,6 +12,9 @@ conectarDB();
 //puerto de la app
 const PORT = process.env.PORT || 4000;
 
+// Importar rutas
+app.use('/api/usuarios', require('./routes/usuarios'));
+
 //Definir la pagina principal | para verificar que todo este bien
 app.get('/', (req, res) => {
     res.send('Hola mundo')
