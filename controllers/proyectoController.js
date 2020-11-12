@@ -19,7 +19,7 @@ exports.crearProyecto = async (req, res) => {
         proyecto.creador = req.usuario.id
 
         //guardamos el proyecto
-        proyecto.save();
+        await proyecto.save();
         res.json(proyecto);
         
     } catch (error) {
