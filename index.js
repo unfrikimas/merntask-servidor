@@ -2,9 +2,14 @@
 const express = require('express');
 //importamos la funcion de conexion a la BD
 const conectarDB = require('./config/db');
+//importamos CORS
+const cors = require('cors');
 
 // crear el servidor
 const app = express();
+
+// habilitar cors
+app.use(cors());
 
 // Conectar a la DB
 conectarDB();

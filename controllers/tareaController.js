@@ -44,7 +44,9 @@ exports.obtenerTareas = async (req, res) => {
     try {
         
         //extraer el proyecto y comprobar si existe
-        const {proyecto} = req.body;        
+        const {proyecto} = req.query;    
+        
+        // console.log(req.query);
         
         const existeProyecto = await Proyecto.findById(proyecto);
         if(!existeProyecto) {
@@ -57,7 +59,7 @@ exports.obtenerTareas = async (req, res) => {
         }
 
         // obtener las tareas por proyecto
-        const tareas = await Tarea.find({ proyecto });
+        const tareas = await Tarea.find({ proyecto }).sort({ creado: -1 });
         res.json({ tareas });
 
     } catch (error) {
@@ -94,12 +96,46 @@ exports.actualizarTarea = async (req, res) => {
 
         // crear un objeto tarea con la nueva informacion
         const nuevaTarea = {};
-        if(nombre) nuevaTarea.nombre = nombre;
-        if(estado) nuevaTarea.estado = estado;
+        nuevaTarea.nombre = nombre;
+        nuevaTarea.estado = estado;
 
         // guardar la tarea
         tarea = await Tarea.findOneAndUpdate({ _id: req.params.id }, nuevaTarea, { new: true });
         res.json({ tarea });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Hubo un error');
+    }
+
+}
+
+// Elimina una tarea por su id
+exports.eliminarTarea = async (req, res) => {
+
+    try {
+
+        //extraer campos del objeto tarea
+        const {proyecto} = req.query;        
+        
+        //validar si la tarea existe
+        let tarea = await Tarea.findById(req.params.id);
+
+        if(!tarea) {
+            return res.status(404).json({ msg: 'No existe esta tarea' });
+        }
+
+        // extraer proyecto
+        const existeProyecto = await Proyecto.findById(proyecto);
+
+        //verificar si el proyecto actual pertenece al creador del proyecto
+        if(existeProyecto.creador.toString() !== req.usuario.id ) {
+            return res.status(401).json({ msg: 'No autorizado' });
+        }
+
+        // Eliminar la tarea
+        await Tarea.findOneAndRemove({ _id: req.params.id });
+        res.json({ msg: 'Tarea eliminada' });
 
     } catch (error) {
         console.log(error);
