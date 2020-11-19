@@ -18,7 +18,7 @@ conectarDB();
 app.use(express.json({ extended: true }));
 
 //puerto de la app
-const port = process.env.PORT || 4000;
+const port = process.env.port || 4000;
 
 // Importar rutas
 app.use('/api/usuarios', require('./routes/usuarios'));
@@ -27,10 +27,10 @@ app.use('/api/proyectos', require('./routes/proyectos'));
 app.use('/api/tareas', require('./routes/tareas'));
 
 
-//Definir la pagina principal | para verificar que todo este bien
-app.get('/', (req, res) => {
-    res.send('Hola mundo')
-});
+// //Definir la pagina principal | para verificar que todo este bien
+// app.get('/', (req, res) => {
+//     res.send('Hola mundo')
+// });
 
 //arrancar la app
 app.listen(port, '0.0.0.0', () => {
